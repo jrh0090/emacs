@@ -1,0 +1,5 @@
+#name : die
+# --
+echo '<pre>';
+print_r(${1:output});
+die('</pre>');

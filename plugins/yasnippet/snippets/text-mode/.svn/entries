@@ -1,0 +1,145 @@
+9
+
+dir
+20362
+https://172.31.1.7/svn/repos/scripts/emacs/plugins/yasnippet/snippets/text-mode
+https://172.31.1.7/svn/repos
+
+
+
+2009-10-23T10:23:35.947273Z
+20362
+jhanson
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+0
+
+f90-mode
+dir
+
+sql-mode
+dir
+
+perl-mode
+dir
+
+html-mode
+dir
+
+email
+file
+
+
+
+
+2009-02-11T09:42:44.000000Z
+fa9ae2839be3e6d9b17a93f74da07504
+2009-10-23T10:23:35.947273Z
+20362
+jhanson
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+47
+
+erlang-mode
+dir
+
+rst-mode
+dir
+
+time
+file
+
+
+
+
+2009-02-11T09:42:44.000000Z
+f0b9d06664e171627d8c87ea7a26b7c6
+2009-10-23T10:23:35.947273Z
+20362
+jhanson
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+51
+
+latex-mode
+dir
+
+nxml-mode
+dir
+
+python-mode
+dir
+
+ruby-mode
+dir
+
+markdown-mode
+dir
+
+scala-mode
+dir
+
+cc-mode
+dir
+
+css-mode
+dir
+
