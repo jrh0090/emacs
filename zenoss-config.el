@@ -71,3 +71,39 @@
 (add-hook 'python-mode-hook 'progmodes-hooks)
 (add-hook 'js2-mode-hook 'progmodes-hooks)
 
+;; zope functions
+(defun switch-to-zope ()
+  "Switchs to my zope.output file, where i keep my plone instance"
+  (interactive)
+  (switch-to-buffer "zope.out")
+  (goto-char (point-max)))
+(global-set-key (kbd "\C-c 6") 'switch-to-zope)
+
+(defun restart-zope ()
+  "Restarts your zope server kind of in the background. It really just
+jumps around the buffers really quickly. This assumes that you have your
+zope instance in a shell file called zope.out "
+  (interactive)
+  (save-excursion
+    (switch-to-zope)
+    ;; stop the previous instance
+    (comint-interrupt-subjob) 
+    (goto-char (point-max))
+    ;; new instance command
+    (insert "runzope")
+    ;; press Enter
+    (comint-send-input)
+    ;; put them back where they were
+    (switch-to-buffer (other-buffer))
+    (message "Restarted your zopes")))
+(global-set-key "\C-x\C-r" 'restart-zope)
+
+;; Trac functions
+(defvar trac-public-url "http://dev.zenoss.org/trac/ticket/" "Where tickets are on the public trac")
+
+(defun trac-browse-public-url()
+  "Browse to the current word as a trac ticket on the public trac url"
+  (interactive)
+  (browse-url (concat trac-public-url (current-word t))))
+
+;; SVN helper functions

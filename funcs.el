@@ -1,4 +1,4 @@
-;; a file for all of my custom emacs functions
+;; a file for all of my custom emacs utility functions
 
 
 ;; copy line instead of kill-undo
@@ -78,35 +78,16 @@ buffer read-only, so I suggest setting kill-read-only-ok to t."
         (find-file file-name)
       (message "file: %s does not exist" file-name))))
 
-
-
 (defun file-name ()
   (interactive)
   (message (buffer-file-name)))
 
 
-(defun switch-to-zope ()
-  "Switchs to my zope.output file, where i keep my plone instance"
-  (interactive)
-  (switch-to-buffer "zope.out")
-  (goto-char (point-max)))
-(global-set-key (kbd "\C-c 6") 'switch-to-zope)
-
-(defun restart-zope ()
-  "Restarts your zope server kind of in the background. It really just
-jumps around the buffers really quickly. This assumes that you have your
-zope instance in a shell file called zope.out "
-  (interactive)
+(defun shell-command-other-window (command window-name)
+  "Runs the command passed in and outputs it in the other window named by window name
+This always runs on the current buffer"
   (save-excursion
-    (switch-to-zope)
-    ;; stop the previous instance
-    (comint-interrupt-subjob) 
-    (goto-char (point-max))
-    ;; new instance command
-    (insert "runzope")
-    ;; press Enter
-    (comint-send-input)
-    ;; put them back where they were
-    (switch-to-buffer (other-buffer))
-    (message "Restarted your zopes")))
-(global-set-key "\C-x\C-r" 'restart-zope)
+    (when (buffer-file-name)  
+      (shell-command (concat command " " (buffer-file-name)) window-name)
+      (switch-to-buffer-other-window window-name)
+      (other-window 1))))

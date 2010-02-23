@@ -7,10 +7,10 @@
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
 
 ;; js2 mode gets funky with the emacs defaults these change them back
-(define-key js2-mode-map (kbd "RET") 'newline-and-indent)
-(define-key js2-mode-map "\C-a" 'back-to-indentation)
 
 (defvar jslint-global-vars "/*global Ext, Zenoss, _t*/")
+(defvar jslint-global-config "/*jslint browser:true, devel:true, nomen:false, white:false, onevar:false, eqeqeq:false*/"
+   "All of the options to pass into jslint, see the http://www.jslint.com/lint.html for a list of them all")
 
 (defun jslint-current-buffer ()
   "This will run jslint in the foreground on the current file you are working on
@@ -22,6 +22,8 @@ to run in flymake mode so I think this is a better option"
     (save-excursion 
       ;; goto the begining of the buffer and place the magic keywords for the js file
       (goto-char (point-min))
+      (insert jslint-global-config)
+      (insert "\n")
       (insert jslint-global-vars)
       (insert "\n")
       (save-buffer)
@@ -36,11 +38,10 @@ to run in flymake mode so I think this is a better option"
       ;; now delete the global vars declaration
       (other-window 1)
       (goto-char (point-min))
-      (kill-line 1)
+      (kill-line 2)
       (save-buffer))))
-(define-key js2-mode-map (kbd "\C-c i") 'jslint-current-buffer)
 
-;; jscomint inferior process
+;; jscomint inferior process and set up files
 (require 'js-comint)
 (add-hook 'js2-mode-hook '(lambda () 
              (local-set-key "\C-x\C-e" 'js-send-last-sexp)
@@ -50,6 +51,10 @@ to run in flymake mode so I think this is a better option"
              (local-set-key "\C-c\C-r" 'js-send-region-and-go)
              (local-set-key "\C-cl" 'js-load-file-and-go)
              (local-set-key "\C-c\C-z" 'run-js)
+             (local-set-key (kbd "RET") 'newline-and-indent)
+             (local-set-key "\C-a" 'back-to-indentation)
+             (local-set-key (kbd "\C-c i") 'jslint-current-buffer)
+             (setq js2-bounce-indent-p t)
              ))
 ;; for jscomint, tells it where my js file is
 (setq inferior-js-program-command "java org.mozilla.javascript.tools.shell.Main")
