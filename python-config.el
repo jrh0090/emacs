@@ -15,8 +15,5 @@
 (add-hook 'find-file-hook 'flymake-find-file-hook)
 
 
-;; Run Pep8 on the current file
-(defun pep8-current-buffer ()
-  "Runs pep8 on the current buffer and outputs the result in the other window"
-  (interactive)
-  (shell-command-other-window "pep8" "pep8-output"))
+(load "python-pylint.el")
+(load "python-pep8.el")

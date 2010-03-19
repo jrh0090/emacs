@@ -79,6 +79,12 @@
   (goto-char (point-max)))
 (global-set-key (kbd "\C-c 6") 'switch-to-zope)
 
+(defun switch-to-zendmd ()
+  (interactive)
+  (switch-to-buffer "zendmd.out")
+  (goto-char (point-max)))
+(global-set-key (kbd "\C-c 1") 'switch-to-zendmd)
+
 (defun restart-zope ()
   "Restarts your zope server kind of in the background. It really just
 jumps around the buffers really quickly. This assumes that you have your
@@ -107,3 +113,22 @@ zope instance in a shell file called zope.out "
   (browse-url (concat trac-public-url (current-word t))))
 
 ;; SVN helper functions
+(defvar svn-sandbox-url "http://dev.zenoss.org/svn/sandboxen/jhanson/" name)
+
+(defun svn-switch-sandboxen (name)
+  (interactive)
+  (let ((command (concat "svn switch " svn-sandbox-url name " /Users/joseph/dev/sandbox/Products")))
+    (shell-command command "svn-output")
+    (switch-to-buffer-other-window "svn-output")))
+
+(defun svn-create-new-sandbox(name)
+  "Will copy svn trunk to the new branch name and switch the dev/sandbox to the new checkout"
+  (interactive "sName of Trunk: ")
+  (let* ((new-trunk (concat svn-sandbox-url name))
+         (command (concat "svn cp -m \"copying trunk\" http://dev.zenoss.org/svn/trunk/Products " new-trunk)))
+    (shell-command command "svn-output")
+    (svn-switch-sandboxen name)))
+(global-set-key "\C-xvn" 'svn-create-new-sandbox)
+
+
+

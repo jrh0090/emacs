@@ -105,6 +105,9 @@
 (require 'color-theme)
 (color-theme-billw)
 
+;; font
+;;(set-default-font "-apple-Didot-medium-normal-normal-*-*-*-*-*-p-0-iso10646-1")
+
 (put 'narrow-to-region 'disabled nil)
 (put 'set-goal-column 'disabled nil)
 
