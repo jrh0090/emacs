@@ -1,5 +1,4 @@
 ;; Alias ctrl x ctrl m for alt m
-(define-key global-map "\C-x\C-m" 'execute-extended-command)
 (define-key global-map "\C-x\C-p" 'revert-buffer)
 (define-key global-map "\M-g" 'goto-line)
 
@@ -15,7 +14,6 @@
 
 ;; short cut to shell
 (global-set-key (kbd "\C-c 5") 'shell)
-(load "funcs")
 
 ;; shortcuts i like
 (global-set-key (kbd "\C-c c") 'comment-region)
@@ -26,5 +24,4 @@
 (global-set-key "\C-ca" 'org-agenda)
 (global-set-key "\C-cb" 'org-iswitchb)
 
-(global-set-key "\M-r" 'mark-word)
-(global-set-key "\C-ch" 'highlight-phrase)
+(global-set-key (kbd "<f5>") 'rgrep)

@@ -1,0 +1,4 @@
+#name : std
+# --
+import sys
+sys.stdout.write($0)

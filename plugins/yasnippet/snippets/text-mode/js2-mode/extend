@@ -1,0 +1,13 @@
+#name : Ext.Extend
+# --
+${1:ClassName} = Ext.extend(${2:SuperClass},
+{
+    constructor: function(config) {
+        config = config || {};
+        Ext.apply(config, {
+           $3
+        });
+        $1.superclass.constructor.apply(this, arguments);
+    }
+});
+Ext.reg('$1', $1);

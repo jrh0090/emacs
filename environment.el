@@ -5,16 +5,17 @@
 ;; load up my path from the system (todo figure out why this doesnt do
 ;; this automatically)
 (setenv "PATH"
-        "/opt/local/bin:/opt/local/sbin:/opt/subversion/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/X11/bin:/Users/joseph/zenoss/zenoss/bin:/Xcode3.1.4/usr/bin"
+        "/Users/joseph/zenoss/bin:/opt/local/bin:/opt/local/sbin:/opt/subversion/bin:/opt/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/X11/bin:/Xcode3.1.4/usr/bin:/usr/local/mysql/bin/"
         )
 
 (setenv "ZENHOME"
-        "/Users/joseph/zenoss/zenoss"
+        "/Users/joseph/zenoss"
         )
 
 (setenv "PYTHONPATH"
-        "/Users/joseph/zenoss/zenoss/"
+        "/Users/joseph/zenoss/lib/python"
         )
+(setenv "PS1" "\\u:\\w$ ")
 
 ;; to have my .profile variables in emacs, not sure why this is necessary
 (shell-command "source ~/.profile")
@@ -59,7 +60,7 @@
 ;; make the default mode text mode with flyspell
 (setq default-major-mode 'text-mode)
 ;; commented out until flyspell starts working for me
-;; (add-hook 'text-mode-hook 'flyspell-mode)
+(add-hook 'text-mode-hook 'flyspell-mode)
 
 (defadvice ispell-command-loop (before ispell-reverse-miss-list activate)
   "reverse the first argument to ispell-command-loop"
@@ -77,6 +78,7 @@
 
 ;; always highlight syntax
 (global-font-lock-mode 1)
+(setq font-lock-maximum-decoration t)
 
 ;; will always need this
 (require 'flymake)
@@ -103,10 +105,11 @@
 
 ;; set the color theme
 (require 'color-theme)
-(color-theme-billw)
+(load-file "~/emacs/color-theme-blackboard.el")
+(color-theme-blackboard)
 
-;; font
-;;(set-default-font "-apple-Didot-medium-normal-normal-*-*-*-*-*-p-0-iso10646-1")
+;; i like blinking cursors
+(blink-cursor-mode t)
 
 (put 'narrow-to-region 'disabled nil)
 (put 'set-goal-column 'disabled nil)
@@ -116,24 +119,42 @@
 (setq-default save-place t)                   ;; activate it for all buffers
 (require 'saveplace)
 
+;; smart tab key (complete/indent)
+(setq tab-always-indent 'complete)
+
 ;; aspell
-(setq-default ispell-program-name "aspell")
+;;(setq-default ispell-program-name "aspell")
 
 ;; easier to navigate between frames
 (when (fboundp 'windmove-default-keybindings)
       (windmove-default-keybindings))
 
-;; mac specific settings
+;; use ibuffer to list buffer contents
+(global-set-key (kbd "\C-x\C-b") 'ibuffer)
 
+;; mac specific settings
 (if (eq system-type 'darwin)
     (progn
+      ;; mac only font
+      ;;(set-default-font "-apple-Consolas-medium-normal-normal-*-*-*-*-*-m-0-iso10646-1")
+      (set-default-font "-apple-Menlo-bold-normal-normal-*-*-*-*-*-m-0-iso10646-1")
       ;; fixing meta for mac (makes command Meta)
       (setq mac-option-key-is-meta nil)
       (setq mac-command-key-is-meta t)
       (setq mac-command-modifier 'meta)
       (setq mac-option-modifier nil)
+      
       ;; now delete forward deletes a char
       (global-set-key (kbd "<kp-delete>") 'delete-char)
+      
+      ;; end by default goes to the end of the buffer
+      (global-set-key (kbd "<end>") 'move-end-of-line)
+      (global-set-key (kbd "<home>") 'back-to-indentation)
+      
+      ;; control Itunes with the f6 key
+      (load-file "~/emacs/osx-osascript.el")
+      (load-file "~/emacs/itunes.el")
+      
       ;; fullscreen on mac
       (defun mac-maximize-frame () 
         (interactive)
@@ -141,4 +162,39 @@
         (set-frame-size (selected-frame) 1000 1000))
       (mac-maximize-frame)))
 
+;; ubuntu (vmware) specific settings
+(if (eq system-type 'gnu/linux)
+    (progn
+      (set-default-font "-bitstream-Bitstream Charter-bold-normal-normal-*-16-*-*-*-*-0-iso10646-1")
+      ))
 
+;; never use the message box (evil!)
+(defalias 'message-box 'message)
+
+;; used so i could compile cedet
+(setq max-lisp-eval-depth 1600)
+
+;; swap windows
+(defun swap-windows ()
+  "If you have 2 windows, it swaps them."
+  (interactive)
+  (cond ((/= (count-windows) 2)
+         (message "You need exactly 2 windows to do this."))
+        (t
+         (let* ((w1 (first (window-list)))
+                (w2 (second (window-list)))
+                (b1 (window-buffer w1))
+                (b2 (window-buffer w2))
+                (s1 (window-start w1))
+                (s2 (window-start w2)))
+           (set-window-buffer w1 b2)
+           (set-window-buffer w2 b1)
+           (set-window-start w1 s2)
+           (set-window-start w2 s1))))
+  (other-window 1))
+
+(global-set-key (kbd "C-c s") 'swap-windows)
+
+
+;; display time mode (shows time and load in the menu bar)
+(display-time-mode 1)

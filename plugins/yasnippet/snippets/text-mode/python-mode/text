@@ -1,0 +1,3 @@
+#name : text
+# --
+$1 = schema.Text(title=_t(u"$2"))

@@ -1,15 +1,15 @@
 ;; lightweight javascript editing mode
 ;; this is useful when there is javascript and html in the same page
-(require 'javascript-mode)
+(load "espresso")
 
-;; js2
+;; js2 javascript IDE
 (autoload 'js2-mode "js2" nil t)
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
 
-;; js2 mode gets funky with the emacs defaults these change them back
 
+;; jslint settings
 (defvar jslint-global-vars "/*global Ext, Zenoss, _t*/")
-(defvar jslint-global-config "/*jslint browser:true, devel:true, nomen:false, white:false, onevar:false, eqeqeq:false*/"
+(defvar jslint-global-config "/*jslint browser:true, devel:true, nomen:false, white:false, onevar:true, eqeqeq:false, plusplus:false*/"
    "All of the options to pass into jslint, see the http://www.jslint.com/lint.html for a list of them all")
 
 (defun jslint-current-buffer ()
@@ -51,11 +51,15 @@ to run in flymake mode so I think this is a better option"
              (local-set-key "\C-c\C-r" 'js-send-region-and-go)
              (local-set-key "\C-cl" 'js-load-file-and-go)
              (local-set-key "\C-c\C-z" 'run-js)
+             ;; js2 ignores some commands
              (local-set-key (kbd "RET") 'newline-and-indent)
              (local-set-key "\C-a" 'back-to-indentation)
              (local-set-key (kbd "\C-c i") 'jslint-current-buffer)
-             (setq js2-bounce-indent-p t)
+             (drag-stuff-mode t)
+             (setq js2-bounce-indent-p nil)
+             (yas/minor-mode-on)
              ))
+
 ;; for jscomint, tells it where my js file is
 (setq inferior-js-program-command "java org.mozilla.javascript.tools.shell.Main")
 
@@ -75,4 +79,4 @@ This assumes the shell to be open and is called *js*"
    (lambda (library)
      (insert (concat "load(\"" library "\");" ))
      (comint-send-input)) js-comint-libraries))
-     
+

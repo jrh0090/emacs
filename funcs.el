@@ -53,18 +53,6 @@ buffer read-only, so I suggest setting kill-read-only-ok to t."
       (kill-region (point-min) (point-max))
       (yank 2)))
 
-(defun push-trunk ()
-  "pushes all of the trunk code live"
-  (interactive)
-  (shell-command "~/push_trunk.sh &")
-  )
-
-(defun push-stable ()
-  "pushes all of the trunk code live"
-  (interactive)
-  (shell-command "~/push_stable.sh &")
-  )
-
 (defun open-template ()
   "If we are the tpl file opens up the php and if in the php will open up the tpl"
   (interactive)
@@ -82,12 +70,59 @@ buffer read-only, so I suggest setting kill-read-only-ok to t."
   (interactive)
   (message (buffer-file-name)))
 
-
 (defun shell-command-other-window (command window-name)
   "Runs the command passed in and outputs it in the other window named by window name
 This always runs on the current buffer"
   (save-excursion
-    (when (buffer-file-name)  
-      (shell-command (concat command " " (buffer-file-name)) window-name)
-      (switch-to-buffer-other-window window-name)
-      (other-window 1))))
+    (progn
+      (when (buffer-file-name)  
+        (shell-command (concat command " " (buffer-file-name)) window-name)
+        (switch-to-buffer-other-window window-name)
+        (other-window 1)))))
+
+(defun inc-dec-number (func)
+  (let ((num (string-to-number (current-word))))
+    (if num
+        (save-excursion
+          (forward-word 1)
+          (backward-kill-word 1)
+          (insert (number-to-string
+                   (if (string= func "+") (+ 1 num)
+                     (- num 1))))))))
+
+(defun increment-number()
+  (interactive)
+  (inc-dec-number "+"))
+(global-set-key "\C-c=" 'increment-number)
+
+(defun decrement-number()
+  (interactive)
+  (inc-dec-number "-"))
+(global-set-key "\C-c-" 'decrement-number)
+
+;; copy word
+(defun copy-word (&optional arg)
+  "Adds the next word to the kill ring, the same as mark-word followed by kill-ring-save"
+  (interactive "P")
+  (save-excursion
+    (toggle-read-only 1)
+    (kill-word arg)
+    (toggle-read-only 0)))
+(global-set-key "\M-r" 'copy-word)
+
+(defun opposite-case()
+  "If the current letter is uppercase, this makes it lower case, otherwise it makes it uppercase"
+  (interactive)
+  (let ((char  (char-after)))
+    (save-excursion
+      ;; remove current character
+      (delete-char 1)
+      ;; place the opposite one
+      (insert   (if (> char 90)
+                    (- char 32)
+                  (+ char 32))))))
+;; was formerly "insert space to tab"
+(global-set-key "\M-i" 'opposite-case)
+
+
+           
