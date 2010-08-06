@@ -1,6 +1,9 @@
 ;; Place to load and configure all non-major libraries i use for emacs
 (require 'twit)
 
+;; don't question opening in the same buffer
+(put 'dired-find-alternate-file 'disabled nil)
+
 ;;; Org Mode 
 ;; org mode short cuts
 (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
@@ -78,5 +81,8 @@
 
 
 
+(autoload 'rainbow-mode "rainbow-mode" nil t)
+(autoload 'google-maps "google-maps" nil t)
 
-
+(emms-standard)
+(emms-default-players)

@@ -106,7 +106,8 @@
 ;; set the color theme
 (require 'color-theme)
 (load-file "~/emacs/color-theme-blackboard.el")
-(color-theme-blackboard)
+(load-file "~/emacs/zenburn.el")
+(color-theme-zenburn)
 
 ;; i like blinking cursors
 (blink-cursor-mode t)

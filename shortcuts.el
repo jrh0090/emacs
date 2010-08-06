@@ -16,8 +16,6 @@
 (global-set-key (kbd "\C-c 5") 'shell)
 
 ;; shortcuts i like
-(global-set-key (kbd "\C-c c") 'comment-region)
-(global-set-key (kbd "\C-c v") 'uncomment-region)
 (global-set-key (kbd "\C-c \C-t") 'lisp-complete-symbol)
 
 (global-set-key "\C-cl" 'org-store-link)

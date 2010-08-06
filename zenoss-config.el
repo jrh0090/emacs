@@ -85,6 +85,15 @@
   (goto-char (point-max)))
 (global-set-key (kbd "\C-c 1") 'switch-to-zendmd)
 
+(defun zen-reload-code ()
+  (interactive)
+  "Reloads code without restart zope"
+  (progn
+    (shell-command "wget  --auth-no-challenge --http-user=admin --http-password=zenoss http://localhost:8080/reload?action=code --http-password=zenoss && rm reload?action*" "reload-output")
+    (kill-buffer "reload-output")
+    (message "code reloaded")))
+  
+
 (defun restart-zope ()
   "Restarts your zope server and takes you to the output.
 This assumes that you have your zope instance in a shell file called zope.out"
@@ -164,11 +173,18 @@ dev/sandbox/Products) and will restart zope "
   (shell-command "rm ~/zenoss/Products && ln -s ~/dev/Products/ ~/zenoss/Products")
   (restart-zope))
 
+(defun zen-switch-to-3.0 ()
+  "Will switch my Products to my 3.0 branch (always checked out in
+dev/sandbox/3.0Products) and will restart zope "
+  (interactive)
+  (shell-command "rm ~/zenoss/Products && ln -s ~/dev/sandbox/3.0/Products/ ~/zenoss/Products")
+  (restart-zope))
+
 (defun zen-reload-tags ()
   "Re-creates the tags file and then reloads it"
   (interactive)
   (progn
-    (shell-command (concat "find . -type f | egrep \"(\.js|\.py)\"  | grep -v '.svn' | grep -v '.pyc' | xargs etags  " main-sandbox))
+    (shell-command (concat "find ~/dev/sandbox/Products -type f | egrep \"(\.js|\.py)\"  | grep -v '.svn' | grep -v '.pyc' | xargs etags  ~/dev/sandbox/Products/TAGS " main-sandbox))
     (visit-tags-table main-sandbox)))
 
 (defun zen-kill-zenoss ()
@@ -251,6 +267,51 @@ this does not actually execute the command"
 
 ;; new idea for functions (python only)
 
-;; test this module 
 
 ;; test this function
+(defun get-current-python-package ()
+  "Returns a string of the current python package, will be of the form
+Products.Zuul etc "
+  (let* ((file-name (buffer-file-name (current-buffer)))
+         (pieces (split-string file-name "/")))
+    ;; assumes user/joseph/dev/sandbox/products
+     (concat (nth 5 pieces) "." (nth 6 pieces))))
+    
+(defvar last-single-unit-test-command "")
+
+(defun run-this-unit-test ()
+  "If the cursor is in a method that is a unit test, it is executed, otherwise the last
+single unit test is executed"
+  (interactive)
+  (save-excursion
+    
+    (if (get-buffer "*Async Shell Command*")
+        (kill-buffer "*Async Shell Command*"))
+    ;;(beginning-of-defun )
+    (search-backward "def\s")
+    (forward-word 2)
+    (let ((function-name (current-word))
+          (package (get-current-python-package)))
+      ;; use if test appears in method name 
+      (if (string-match "test" function-name)         
+          (setq last-single-unit-test-command (concat "runtests -n "
+                                                      function-name
+                                                      " "
+                                                      package
+                                                      "&")))
+       
+      (message (concat "Running unit test: " last-single-unit-test-command))
+      ;; would always sub divide the current window, which I found annoying
+      (delete-other-windows)
+      (shell-command last-single-unit-test-command))))
+;; making this global so we can use it from shell etc
+(global-set-key "\C-ct" 'run-this-unit-test)
+      
+
+(defun zen-test-this-module ()
+  "Runs the unit tests for the current python module we are sitting
+in, doesn't remember previous test"
+  (interactive)
+  (let ((package (get-current-python-package)))
+    (shell-command (concat "runtests " package "&"))))
+
